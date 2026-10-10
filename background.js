@@ -1,5 +1,5 @@
 // ============================================================
-// Download Organizer Pro — background.js (Phase 1: Free Only)
+// Download Organizer Pro — background.js (Phase 2: Full Pro Gates)
 // ============================================================
 
 // --- Constants ---

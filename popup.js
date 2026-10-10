@@ -1,5 +1,5 @@
 // ============================================================
-// Download Organizer Pro — popup.js (Phase 1: Free Features)
+// Download Organizer Pro — popup.js (Phase 2: Full Pro Gates)
 // ============================================================
 
 // --- Constants ---
@@ -64,27 +64,39 @@ function renderProState(isPro) {
     planProEl.hidden = true;
   }
 
-  // Pro category rows — lock or unlock
-  PRO_CATEGORIES.forEach((cat) => {
-    const input = document.querySelector(`[data-category="${cat}"]`);
-    const row = input ? input.closest('.category-row') : null;
-    const badge = document.getElementById(`badge-${cat}`);
+  // Upgrade link — hide when Pro
+  const upgradeLink = document.getElementById('nav-to-license');
+  if (upgradeLink) upgradeLink.hidden = isPro;
+
+  // Custom folder names are Pro-only (per monetization.md)
+  // Lock ALL folder inputs on free plan, unlock all on Pro
+  document.querySelectorAll('[data-category]').forEach((input) => {
+    const cat = input.dataset.category;
+    const row = input.closest('.category-row');
+    const isProCat = PRO_CATEGORIES.includes(cat);
 
     if (isPro) {
-      if (input) {
-        input.classList.remove('locked');
-        input.removeAttribute('disabled');
-      }
+      // Pro: unlock everything
+      input.classList.remove('locked');
+      input.removeAttribute('disabled');
       if (row) row.classList.remove('locked');
-      if (badge) badge.hidden = true;
-    } else {
-      if (input) {
-        input.classList.add('locked');
-        input.setAttribute('disabled', 'true');
-      }
+    } else if (isProCat) {
+      // Free + Pro category: fully locked row
+      input.classList.add('locked');
+      input.setAttribute('disabled', 'true');
       if (row) row.classList.add('locked');
-      if (badge) badge.hidden = false;
+    } else {
+      // Free + Free category: input editable (custom names work for free cats)
+      input.classList.remove('locked');
+      input.removeAttribute('disabled');
+      if (row) row.classList.remove('locked');
     }
+  });
+
+  // Pro badges — show/hide
+  PRO_CATEGORIES.forEach((cat) => {
+    const badge = document.getElementById(`badge-${cat}`);
+    if (badge) badge.hidden = isPro;
   });
 
   // Date subfolders — lock if not pro
@@ -99,6 +111,20 @@ function renderProState(isPro) {
 
   // Stats button — show only for Pro
   navToStatsBtn.hidden = !isPro;
+
+  // License button — update text when Pro
+  const licenseBtn = document.getElementById('nav-to-license-btn');
+  if (licenseBtn) {
+    if (isPro) {
+      licenseBtn.textContent = '✓ Pro License Active';
+      licenseBtn.disabled = true;
+      licenseBtn.style.opacity = '0.6';
+    } else {
+      licenseBtn.textContent = 'Activate License Key';
+      licenseBtn.disabled = false;
+      licenseBtn.style.opacity = '1';
+    }
+  }
 }
 
 function loadSettings() {
@@ -166,7 +192,8 @@ async function handleActivateLicense() {
     const data = await response.json();
 
     if (data.valid) {
-      chrome.storage.sync.set({ isPro: true, licenseKey: key });
+      // Store isPro, licenseKey, and apiUrl (apiUrl needed for background re-validation alarm)
+      chrome.storage.sync.set({ isPro: true, licenseKey: key, apiUrl: VALIDATION_API_URL });
       renderProState(true);
       licenseSuccessEl.textContent = '✓ Pro activated! Welcome.';
       licenseSuccessEl.hidden = false;
