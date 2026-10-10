@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Download Organizer Pro</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 340px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #353545;
+      color: #ffffff;
+      padding: 16px;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .header-text h1 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* ===== Toggle Switch ===== */
+    .toggle-wrapper {
+      padding-top: 4px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-track {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #334155;
+      border-radius: 22px;
+      transition: background 0.2s;
+    }
+
+    .toggle-track::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      left: 3px;
+      top: 3px;
+      transition: transform 0.2s;
+    }
+
+    .toggle input:checked + .toggle-track {
+      background: #6366f1;
+    }
+
+    .toggle input:checked + .toggle-track::before {
+      transform: translateX(18px);
+    }
+
+    /* ===== Plan Banner ===== */
+    .plan-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid #1a1a26;
+      border-bottom: 1px solid #1a1a26;
+      margin-bottom: 14px;
+    }
+
+    .plan-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .plan-label.free {
+      color: #94a3b8;
+    }
+
+    .plan-label.pro {
+      color: #22c55e;
+    }
+
+    .upgrade-link {
+      font-size: 11px;
+      color: #6366f1;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .upgrade-link:hover {
+      color: #4f46e5;
+    }
+
+    /* ===== Section Label ===== */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+
+    /* ===== Category Row ===== */
+    .category-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #1a1a26;
+    }
+
+    .category-icon {
+      font-size: 15px;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .category-label {
+      font-size: 12px;
+      color: #94a3b8;
+      width: 72px;
+      flex-shrink: 0;
+    }
+
+    .category-input {
+      flex: 1;
+      background: #2a2a3a;
+      border: 1px solid #1a1a26;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 12px;
+      color: #ffffff;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+
+    .category-input:focus {
+      border-color: #6366f1;
+    }
+
+    .pro-badge {
+      font-size: 10px;
+      background: #6366f1;
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 2px 6px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ===== Date Subfolder ===== */
+    .date-subfolder {
+      padding: 10px 0;
+      border-bottom: 1px solid #1a1a26;
+      margin-bottom: 14px;
+    }
+
+    .date-subfolder label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .date-subfolder input[type="checkbox"] {
+      accent-color: #6366f1;
+      width: 14px;
+      height: 14px;
+    }
+
+    .date-hint {
+      font-size: 10px;
+      color: #475569;
+      margin-top: 4px;
+      padding-left: 22px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-primary {
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      background: #4f46e5;
+    }
+
+    .btn-primary:active {
+      background: #4338ca;
+    }
+
+    .btn-secondary {
+      background: #2a2a3a;
+      color: #94a3b8;
+      border: 1px solid #1a1a26;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .btn-secondary:hover {
+      background: #1e1e2e;
+    }
+
+    .btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #22c55e;
+      color: #ffffff;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+
+    .toast.visible {
+      opacity: 1;
+    }
+
+    /* ===== Screen: Stats ===== */
+    .screen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .back-link {
+      font-size: 12px;
+      color: #6366f1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .back-link:hover {
+      color: #4f46e5;
+    }
+
+    .screen-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .stats-total-label {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .stats-total-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid #1a1a26;
+    }
+
+    .stat-row-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-icon {
+      font-size: 15px;
+      width: 22px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .stat-count {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .reset-btn {
+      background: #2a2a3a;
+      color: #ef4444;
+      border: 1px solid #1a1a26;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 16px;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .reset-btn:hover {
+      background: #1e1e2e;
+    }
+
+    /* ===== Screen: License ===== */
+    .license-tagline {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+    }
+
+    .pricing-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .pricing-btn {
+      flex: 1;
+      background: #6366f1;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .pricing-btn:hover {
+      background: #4f46e5;
+    }
+
+    .pricing-btn:active {
+      background: #4338ca;
+    }
+
+    .pricing-btn .price {
+      font-size: 15px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .pricing-btn .price-desc {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #1a1a26;
+    }
+
+    .divider span {
+      font-size: 11px;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .license-input {
+      width: 100%;
+      background: #2a2a3a;
+      border: 1px solid #1a1a26;
+      border-radius: 6px;
+      padding: 9px 10px;
+      font-size: 12px;
+      color: #ffffff;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+
+    .license-input:focus {
+      border-color: #6366f1;
+    }
+
+    .msg-error {
+      font-size: 12px;
+      color: #ef4444;
+      margin-top: 10px;
+    }
+
+    .msg-success {
+      font-size: 12px;
+      color: #22c55e;
+      margin-top: 10px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Screen 1: Main ===== -->
+  <div id="screen-main">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <span class="header-icon">📁</span>
+        <div class="header-text">
+          <h1>Download Organizer Pro</h1>
+          <p>Auto-sort files into folders</p>
+        </div>
+      </div>
+      <div class="toggle-wrapper">
+        <label class="toggle">
+          <input type="checkbox" id="toggle-enabled" checked>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Plan Banner -->
+    <div class="plan-banner">
+      <span class="plan-label free" id="plan-free">FREE PLAN</span>
+      <span class="plan-label pro" id="plan-pro" hidden>✓ PRO ACTIVE</span>
+      <span class="upgrade-link" id="nav-to-license">Upgrade to Pro →</span>
+    </div>
+
+    <!-- Sorting Folders -->
+    <div class="section-label">SORTING FOLDERS</div>
+
+    <div class="category-row">
+      <span class="category-icon">🖼</span>
+      <span class="category-label">Images</span>
+      <input type="text" class="category-input" data-category="images" value="Images" placeholder="Images">
+    </div>
+
+    <div class="category-row">
+      <span class="category-icon">🎬</span>
+      <span class="category-label">Videos</span>
+      <input type="text" class="category-input" data-category="videos" value="Videos" placeholder="Videos">
+    </div>
+
+    <div class="category-row">
+      <span class="category-icon">📄</span>
+      <span class="category-label">Documents</span>
+      <input type="text" class="category-input" data-category="documents" value="Documents" placeholder="Documents">
+    </div>
+
+    <div class="category-row" id="row-audio">
+      <span class="category-icon">🎵</span>
+      <span class="category-label">Music</span>
+      <input type="text" class="category-input" data-category="audio" value="Music" placeholder="Music">
+      <span class="pro-badge" id="badge-audio">PRO</span>
+    </div>
+
+    <div class="category-row" id="row-archives">
+      <span class="category-icon">📦</span>
+      <span class="category-label">Archives</span>
+      <input type="text" class="category-input" data-category="archives" value="Archives" placeholder="Archives">
+      <span class="pro-badge" id="badge-archives">PRO</span>
+    </div>
+
+    <div class="category-row" id="row-code">
+      <span class="category-icon">💻</span>
+      <span class="category-label">Code</span>
+      <input type="text" class="category-input" data-category="code" value="Code" placeholder="Code">
+      <span class="pro-badge" id="badge-code">PRO</span>
+    </div>
+
+    <!-- Date Subfolders -->
+    <div class="date-subfolder" id="date-subfolder-section">
+      <label>
+        <input type="checkbox" id="date-subfolders-checkbox">
+        Date subfolders <span class="pro-badge" style="margin-left: 4px;">PRO</span>
+      </label>
+      <div class="date-hint">e.g. Images/2026/October</div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-stack">
+      <button class="btn-primary" id="btn-save">Save Settings</button>
+      <button class="btn-secondary" id="nav-to-license-btn">Activate License Key</button>
+      <button class="btn-secondary" id="nav-to-stats" hidden>View Stats</button>
+    </div>
+  </div>
+
+  <!-- ===== Screen 2: Stats ===== -->
+  <div id="screen-stats" hidden>
+    <div class="screen-header">
+      <span class="back-link" id="back-from-stats">← Back</span>
+      <span class="screen-title">STATS</span>
+    </div>
+
+    <div class="stats-total-label">Total Files Sorted</div>
+    <div class="stats-total-number" id="stat-total">0</div>
+
+    <div class="stat-row">
+      <div class="stat-row-left">
+        <span class="stat-icon">🖼</span>
+        <span class="stat-label">Images</span>
+      </div>
+      <span class="stat-count" id="stat-images">0</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-row-left">
+        <span class="stat-icon">🎬</span>
+        <span class="stat-label">Videos</span>
+      </div>
+      <span class="stat-count" id="stat-videos">0</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-row-left">
+        <span class="stat-icon">📄</span>
+        <span class="stat-label">Documents</span>
+      </div>
+      <span class="stat-count" id="stat-documents">0</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-row-left">
+        <span class="stat-icon">🎵</span>
+        <span class="stat-label">Music</span>
+      </div>
+      <span class="stat-count" id="stat-audio">0</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-row-left">
+        <span class="stat-icon">📦</span>
+        <span class="stat-label">Archives</span>
+      </div>
+      <span class="stat-count" id="stat-archives">0</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-row-left">
+        <span class="stat-icon">💻</span>
+        <span class="stat-label">Code</span>
+      </div>
+      <span class="stat-count" id="stat-code">0</span>
+    </div>
+
+    <button class="reset-btn" id="btn-reset-stats">Reset Stats</button>
+  </div>
+
+  <!-- ===== Screen 3: License ===== -->
+  <div id="screen-license" hidden>
+    <div class="screen-header">
+      <span class="back-link" id="back-from-license">← Back</span>
+      <span class="screen-title">ACTIVATE PRO</span>
+    </div>
+
+    <div class="license-tagline">Upgrade once. Sort forever.</div>
+
+    <div class="pricing-row">
+      <button class="pricing-btn" id="btn-onetime">
+        <span class="price">$4.99</span>
+        <span class="price-desc">One-Time</span>
+      </button>
+      <button class="pricing-btn" id="btn-monthly">
+        <span class="price">$1.99</span>
+        <span class="price-desc">/ month</span>
+      </button>
+    </div>
+
+    <div class="divider">
+      <span>Already have a key?</span>
+    </div>
+
+    <input type="text" class="license-input" id="license-key-input" placeholder="Enter your license key...">
+
+    <button class="btn-primary" id="btn-activate">Activate License</button>
+
+    <div class="msg-error" id="license-error" hidden></div>
+    <div class="msg-success" id="license-success" hidden></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Download Organizer Pro",
+  "version": "1.0.0",
+  "description": "Automatically sorts every download into the right folder. Images, videos, documents — always in their place.",
+  "permissions": ["downloads", "storage", "alarms"],
+  "host_permissions": ["https://api.lemonsqueezy.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Download Organizer Pro",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
