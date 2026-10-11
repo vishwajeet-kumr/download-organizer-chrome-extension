@@ -89,8 +89,8 @@ These live in Vercel dashboard → Project Settings → Environment Variables.
 Never hardcode them. Never commit them.
 
 ```
-DODO_PAYMENT_API_KEY=       # From Dodo Payment → Settings → API → Create key
-DODO_PAYMENT_STORE_ID=      # From Dodo Payment → Settings → Store → numeric ID
+DODO_API_KEY=               # From Dodo Payments → Developer → API Keys
+DODO_WEBHOOK_SECRET=        # From Dodo Payments → Developer → Webhooks
 ```
 
 ---

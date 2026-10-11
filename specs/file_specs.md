@@ -17,7 +17,7 @@
   "version": "1.0.0",
   "description": "Automatically sorts every download into the right folder. Images, videos, documents — always in their place.",
   "permissions": ["downloads", "storage", "alarms"],
-  "host_permissions": ["https://api.lemonsqueezy.com/*"],
+  "host_permissions": ["https://api.dodopayments.com/*"],
   "background": {
     "service_worker": "background.js"
   },
@@ -246,9 +246,9 @@ Every input must have `data-category` attribute matching the category key (image
 ### Constants (at top of file)
 
 ```js
-const DODO_PAYMENT_URLS = {
-  oneTime: 'REPLACE_WITH_DODO_PAYMENT_ONETIME_CHECKOUT_URL',
-  monthly: 'REPLACE_WITH_DODO_PAYMENT_MONTHLY_CHECKOUT_URL',
+const DODO_URLS = {
+  oneTime: 'REPLACE_WITH_DODO_ONETIME_CHECKOUT_URL',
+  monthly: 'REPLACE_WITH_DODO_MONTHLY_CHECKOUT_URL',
 };
 const VALIDATION_API_URL = 'REPLACE_WITH_VERCEL_URL/api/validate-license';
 
@@ -330,9 +330,9 @@ document.getElementById('nav-to-license').addEventListener('click', () => showSc
 document.getElementById('nav-to-stats').addEventListener('click', () => { loadStats(); showScreen('screen-stats'); });
 document.getElementById('back-from-stats').addEventListener('click', () => showScreen('screen-main'));
 document.getElementById('back-from-license').addEventListener('click', () => showScreen('screen-main'));
-// Dodo Payment buttons
-document.getElementById('btn-onetime').addEventListener('click', () => chrome.tabs.create({ url: DODO_PAYMENT_URLS.oneTime }));
-document.getElementById('btn-monthly').addEventListener('click', () => chrome.tabs.create({ url: DODO_PAYMENT_URLS.monthly }));
+// Dodo Payments buttons
+document.getElementById('btn-onetime').addEventListener('click', () => chrome.tabs.create({ url: DODO_URLS.oneTime }));
+document.getElementById('btn-monthly').addEventListener('click', () => chrome.tabs.create({ url: DODO_URLS.monthly }));
 ```
 
 ---
@@ -356,27 +356,30 @@ If !licenseKey or typeof licenseKey !== 'string' or licenseKey.trim() === ''
   → res.status(400).json({ valid: false }) → return
 
 try {
-  const lsResponse = await fetch('https://api.lemonsqueezy.com/v1/licenses/validate', {
+  const dodoResponse = await fetch('https://api.dodopayments.com/licenses/validate', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.DODO_PAYMENT_API_KEY}`,
+      'Authorization': `Bearer ${process.env.DODO_API_KEY}`,
     },
     body: JSON.stringify({ license_key: licenseKey.trim() }),
   })
 
-  if (!lsResponse.ok) → res.status(200).json({ valid: false }) → return
+  if (!dodoResponse.ok) → res.status(200).json({ valid: false }) → return
 
-  const data = await lsResponse.json()
+  const data = await dodoResponse.json()
 
-  if (data.meta?.store_id !== Number(process.env.DODO_PAYMENT_STORE_ID))
+  if (process.env.DODO_WEBHOOK_SECRET) {
+    if (data.store_id && String(data.store_id) !== String(process.env.DODO_WEBHOOK_SECRET))
+      → res.status(200).json({ valid: false }) → return
+  }
+
+  const isValid = data.valid === true || data.status === 'active'
+  if (!isValid)
     → res.status(200).json({ valid: false }) → return
 
-  if (data.meta?.status !== 'active')
-    → res.status(200).json({ valid: false }) → return
-
-  const variantName = data.meta?.variant_name ?? ''
+  const variantName = data.meta?.variant_name || data.variant_name || data.product_name || data.plan || ''
   const plan = variantName.toLowerCase().includes('month') ? 'monthly' : 'onetime'
 
   res.status(200).json({ valid: true, plan })
@@ -424,7 +427,7 @@ Host it on Vercel alongside the API (place in project root as a static file).
    - Any personally identifiable information
 
 3. **Third parties:**
-   - Dodo Payment (lemonsqueezy.com) — payment processing and license validation
+   - Dodo Payments (dodopayments.com) — payment processing and license validation
    - Google Chrome sync — stores your folder preferences across Chrome profiles
 
 4. **Data retention:**

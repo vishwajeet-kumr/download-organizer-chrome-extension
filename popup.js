@@ -4,9 +4,9 @@
 
 // --- Constants ---
 
-const LEMON_SQUEEZY_URLS = {
-  oneTime: 'REPLACE_WITH_LEMON_SQUEEZY_ONETIME_CHECKOUT_URL',
-  monthly: 'REPLACE_WITH_LEMON_SQUEEZY_MONTHLY_CHECKOUT_URL',
+const DODO_URLS = {
+  oneTime: 'REPLACE_WITH_DODO_ONETIME_CHECKOUT_URL',
+  monthly: 'REPLACE_WITH_DODO_MONTHLY_CHECKOUT_URL',
 };
 const VALIDATION_API_URL = 'REPLACE_WITH_VERCEL_URL/api/validate-license';
 
@@ -248,6 +248,6 @@ document.getElementById('nav-to-stats').addEventListener('click', () => { loadSt
 document.getElementById('back-from-stats').addEventListener('click', () => showScreen('screen-main'));
 document.getElementById('back-from-license').addEventListener('click', () => showScreen('screen-main'));
 
-// Lemon Squeezy buttons
-document.getElementById('btn-onetime').addEventListener('click', () => chrome.tabs.create({ url: LEMON_SQUEEZY_URLS.oneTime }));
-document.getElementById('btn-monthly').addEventListener('click', () => chrome.tabs.create({ url: LEMON_SQUEEZY_URLS.monthly }));
+// Dodo Payments buttons
+document.getElementById('btn-onetime').addEventListener('click', () => chrome.tabs.create({ url: DODO_URLS.oneTime }));
+document.getElementById('btn-monthly').addEventListener('click', () => chrome.tabs.create({ url: DODO_URLS.monthly }));

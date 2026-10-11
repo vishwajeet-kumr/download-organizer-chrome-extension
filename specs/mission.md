@@ -70,8 +70,8 @@ The project is complete when ALL of the following are true:
 - [ ] Custom folder names persist after popup is closed and reopened
 - [ ] Toggle to OFF disables all sorting immediately
 - [ ] Date subfolder creates correct year/month path (Pro only)
-- [ ] Vercel API returns { valid: true } for a real active Lemon Squeezy license
+- [ ] Vercel API returns { valid: true } for a real active Dodo Payments license
 - [ ] Vercel API returns { valid: false } for an invalid or expired key
 - [ ] Extension ZIP passes Chrome Web Store validator with no errors
 - [ ] Privacy Policy is live at a public URL
-- [ ] Both Lemon Squeezy checkout URLs are live and accepting payments
+- [ ] Both Dodo Payments checkout URLs are live and accepting payments

@@ -97,7 +97,7 @@ Tasks (in order):
 
 Tasks (in order):
 
-1. Create account at lemonsqueezy.com
+1. Create account at dodopayments.com
 2. Create a Store, set currency to USD
 3. Create Product 1: "Download Organizer Pro — Lifetime" → $4.99 → one-time purchase → enable License Keys
 4. Create Product 2: "Download Organizer Pro — Monthly" → $1.99/month → subscription → enable License Keys

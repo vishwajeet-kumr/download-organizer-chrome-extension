@@ -85,7 +85,7 @@ if (!isPro) {
 
 ## Dodo Payment Setup (Manual Steps — Phase 4)
 
-1. Create account at lemonsqueezy.com
+1. Create account at dodopayments.com
 2. Go to Settings → Store → note your numeric Store ID
 3. Create Product 1:
    - Name: Download Organizer Pro — Lifetime
@@ -97,9 +97,9 @@ if (!isPro) {
    - Price: $1.99 USD/month
    - Type: Subscription
    - Enable: License Keys → Activations Limit: 3
-5. Go to Settings → API → Create API key (read-only scope sufficient)
-6. Copy API key → add to Vercel env as DODO_PAYMENT_API_KEY
-7. Copy Store ID → add to Vercel env as DODO_PAYMENT_STORE_ID
+5. Go to Developer → API Keys → Create API key (read-only scope sufficient)
+6. Copy API key → add to Vercel env as DODO_API_KEY
+7. Go to Developer → Webhooks → copy Webhook Secret → add to Vercel env as DODO_WEBHOOK_SECRET
 8. Copy checkout URL for each product → update popup.js constants
 
 ---
@@ -118,11 +118,11 @@ if (!isPro) {
 2. Reject non-POST methods with 405
 3. Parse JSON body → extract licenseKey
 4. Validate licenseKey is a non-empty string — reject with { valid: false } if not
-5. POST to `https://api.lemonsqueezy.com/v1/licenses/validate`
+5. POST to `https://api.dodopayments.com/licenses/validate`
    - Body: `{ license_key: licenseKey }`
-   - Headers: `Authorization: Bearer ${process.env.DODO_PAYMENT_API_KEY}`
+   - Headers: `Authorization: Bearer ${process.env.DODO_API_KEY}`
 6. If response status is not 200 → return { valid: false }
-7. If `data.attributes.store_id !== Number(process.env.DODO_PAYMENT_STORE_ID)` → return { valid: false }
+7. Verify store using `process.env.DODO_WEBHOOK_SECRET`
 8. If `data.attributes.status !== 'active'` → return { valid: false }
 9. Determine plan:
    - Check `data.attributes.variant_name` (or `meta.variant_name`)
