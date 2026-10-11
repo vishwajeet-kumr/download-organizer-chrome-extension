@@ -1,4 +1,5 @@
 # launch.md — Download Organizer Pro
+
 ## Post-Launch Growth Checklist
 
 > Read this file AFTER Phase 5 is complete and the extension is live on the Chrome Web Store.
@@ -76,7 +77,7 @@
 ## Revenue Targets
 
 | Milestone | What it means |
-|-----------|--------------|
+| ----------- | -------------- |
 | 100 installs | Extension is discoverable — keep going |
 | 500 installs | Enough sample size to read reviews and improve |
 | 5% Pro conversion | Healthy — $25–$50/month starting base |

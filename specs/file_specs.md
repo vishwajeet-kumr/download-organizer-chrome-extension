@@ -1,4 +1,5 @@
 # file_specs.md — Download Organizer Pro
+
 ## Per-File Implementation Specifications
 
 > Read this file when writing a specific file.
@@ -142,6 +143,7 @@ getDatePath()
 ```
 
 ### chrome.runtime.onInstalled handler
+
 ```
 1. chrome.storage.sync.get(['enabled', 'isPro', 'licenseKey', 'folderMap', 'dateSubfolders', 'apiUrl'])
 2. Build updates object with only keys that are undefined (never overwrite existing settings)
@@ -152,6 +154,7 @@ getDatePath()
 ```
 
 ### chrome.alarms.onAlarm handler
+
 ```
 1. If alarm.name !== 'revalidate-license' → return
 2. chrome.storage.sync.get(['licenseKey', 'apiUrl'])
@@ -163,6 +166,7 @@ getDatePath()
 ```
 
 ### chrome.downloads.onDeterminingFilename listener
+
 ```
 1. Read from chrome.storage.sync: ['enabled', 'isPro', 'folderMap', 'dateSubfolders']
 2. If !enabled → suggest() → return
@@ -186,6 +190,7 @@ Single file. Inline all CSS. No external CDNs. Reference only popup.js.
 See ui_spec.md for all colors, dimensions, and component CSS.
 
 ### HTML structure
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -239,10 +244,11 @@ Every input must have `data-category` attribute matching the category key (image
 ## popup.js
 
 ### Constants (at top of file)
+
 ```js
-const LEMON_SQUEEZY_URLS = {
-  oneTime: 'REPLACE_WITH_LEMON_SQUEEZY_ONETIME_CHECKOUT_URL',
-  monthly: 'REPLACE_WITH_LEMON_SQUEEZY_MONTHLY_CHECKOUT_URL',
+const DODO_PAYMENT_URLS = {
+  oneTime: 'REPLACE_WITH_DODO_PAYMENT_ONETIME_CHECKOUT_URL',
+  monthly: 'REPLACE_WITH_DODO_PAYMENT_MONTHLY_CHECKOUT_URL',
 };
 const VALIDATION_API_URL = 'REPLACE_WITH_VERCEL_URL/api/validate-license';
 
@@ -312,6 +318,7 @@ handleResetStats()
 ```
 
 ### Event wiring (at bottom of file, outside all functions)
+
 ```js
 document.addEventListener('DOMContentLoaded', loadSettings);
 toggleEl.addEventListener('change', handleToggle);
@@ -323,9 +330,9 @@ document.getElementById('nav-to-license').addEventListener('click', () => showSc
 document.getElementById('nav-to-stats').addEventListener('click', () => { loadStats(); showScreen('screen-stats'); });
 document.getElementById('back-from-stats').addEventListener('click', () => showScreen('screen-main'));
 document.getElementById('back-from-license').addEventListener('click', () => showScreen('screen-main'));
-// Lemon Squeezy buttons
-document.getElementById('btn-onetime').addEventListener('click', () => chrome.tabs.create({ url: LEMON_SQUEEZY_URLS.oneTime }));
-document.getElementById('btn-monthly').addEventListener('click', () => chrome.tabs.create({ url: LEMON_SQUEEZY_URLS.monthly }));
+// Dodo Payment buttons
+document.getElementById('btn-onetime').addEventListener('click', () => chrome.tabs.create({ url: DODO_PAYMENT_URLS.oneTime }));
+document.getElementById('btn-monthly').addEventListener('click', () => chrome.tabs.create({ url: DODO_PAYMENT_URLS.monthly }));
 ```
 
 ---
@@ -354,7 +361,7 @@ try {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.LEMON_SQUEEZY_API_KEY}`,
+      'Authorization': `Bearer ${process.env.DODO_PAYMENT_API_KEY}`,
     },
     body: JSON.stringify({ license_key: licenseKey.trim() }),
   })
@@ -363,7 +370,7 @@ try {
 
   const data = await lsResponse.json()
 
-  if (data.meta?.store_id !== Number(process.env.LEMON_SQUEEZY_STORE_ID))
+  if (data.meta?.store_id !== Number(process.env.DODO_PAYMENT_STORE_ID))
     → res.status(200).json({ valid: false }) → return
 
   if (data.meta?.status !== 'active')
@@ -393,6 +400,7 @@ try {
   }
 }
 ```
+
 CORS headers are set inside the function itself — no need for headers config in vercel.json.
 
 ---
@@ -403,6 +411,7 @@ A static HTML page. Apply the same #353545 theme from ui_spec.md.
 Host it on Vercel alongside the API (place in project root as a static file).
 
 ### Required content sections
+
 1. **What we collect:**
    - Download filenames — processed locally in the browser, never sent to our servers
    - Folder preferences — stored in chrome.storage.sync (Google's infrastructure)
@@ -415,7 +424,7 @@ Host it on Vercel alongside the API (place in project root as a static file).
    - Any personally identifiable information
 
 3. **Third parties:**
-   - Lemon Squeezy (lemonsqueezy.com) — payment processing and license validation
+   - Dodo Payment (lemonsqueezy.com) — payment processing and license validation
    - Google Chrome sync — stores your folder preferences across Chrome profiles
 
 4. **Data retention:**

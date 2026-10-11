@@ -1,4 +1,5 @@
 # tech_stack.md — Download Organizer Pro
+
 ## Technology Stack, File Structure & MV3 Constraints
 
 ---
@@ -6,7 +7,7 @@
 ## Stack Decisions
 
 | Layer | Choice | Reason |
-|-------|--------|--------|
+| ------- | -------- | -------- |
 | Extension standard | Manifest V3 | Required for all new Chrome extensions — MV3 only |
 | Language | Vanilla JavaScript (ES2022) | No build step, no bundler, no npm. Load unpacked and it runs. |
 | Storage | chrome.storage.sync + chrome.storage.local | sync for settings/license, local for stats |
@@ -45,6 +46,7 @@ When zipping for Chrome Web Store: exclude `api/` and `vercel.json`.
 ## Chrome Storage Schema
 
 ### chrome.storage.sync (syncs across user's Chrome profiles)
+
 ```js
 {
   enabled: boolean,          // default: true
@@ -64,6 +66,7 @@ When zipping for Chrome Web Store: exclude `api/` and `vercel.json`.
 ```
 
 ### chrome.storage.local (device only — for stats volume)
+
 ```js
 {
   stats: {
@@ -86,8 +89,8 @@ These live in Vercel dashboard → Project Settings → Environment Variables.
 Never hardcode them. Never commit them.
 
 ```
-LEMON_SQUEEZY_API_KEY=       # From Lemon Squeezy → Settings → API → Create key
-LEMON_SQUEEZY_STORE_ID=      # From Lemon Squeezy → Settings → Store → numeric ID
+DODO_PAYMENT_API_KEY=       # From Dodo Payment → Settings → API → Create key
+DODO_PAYMENT_STORE_ID=      # From Dodo Payment → Settings → Store → numeric ID
 ```
 
 ---
@@ -105,6 +108,7 @@ All state must live in chrome.storage. On every event, read from storage first.
 When using async callbacks inside this listener (which we always do for storage.get),
 the listener must synchronously return true to keep the response channel open.
 If it returns undefined (implicit), the suggest() call from inside the callback is ignored.
+
 ```js
 chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
   chrome.storage.sync.get([...], (result) => {
@@ -115,7 +119,7 @@ chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
 ```
 
 **Constraint 3 — chrome.tabs.create is not available in service workers.**
-Opening URLs (Lemon Squeezy checkout) must be done from popup.js, not background.js.
+Opening URLs (Dodo Payment checkout) must be done from popup.js, not background.js.
 
 **Constraint 4 — Folder paths are relative to the user's Downloads directory.**
 suggest({ filename: 'Images/photo.jpg' }) creates Downloads/Images/photo.jpg.
