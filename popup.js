@@ -8,7 +8,7 @@ const DODO_URLS = {
   oneTime: 'https://test.checkout.dodopayments.com/buy/pdt_0NpVjeV6YhyOO3XLztFoq?quantity=1',
   monthly: 'https://test.checkout.dodopayments.com/buy/pdt_0NpVjoHNkR4JDagrJH14a?quantity=1',
 };
-const VALIDATION_API_URL = 'https://download-organizer-chrome-extension-jptfekref.vercel.app/api/validate-license';
+const VALIDATION_API_URL = 'https://download-organizer-chrome-extension.vercel.app/api/validate-license';
 
 const DEFAULT_FOLDER_MAP = {
   images: 'Images', videos: 'Videos', documents: 'Documents',
