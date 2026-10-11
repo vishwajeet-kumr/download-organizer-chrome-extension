@@ -64,8 +64,7 @@ if (!isPro) {
 
 ## License Validation Flow
 
-```
-1. User opens popup → clicks "Upgrade to Pro"
+```1. User opens popup → clicks "Upgrade to Pro"
 2. Popup shows license screen (screen 3)
 3. User clicks "$4.99 One-Time" or "$1.99/mo" button
 4. chrome.tabs.create opens Dodo Payment checkout in new tab
@@ -133,8 +132,7 @@ if (!isPro) {
 
 ### Required CORS Headers on Every Response
 
-```
-Access-Control-Allow-Origin: *
+```Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: POST, OPTIONS
 Access-Control-Allow-Headers: Content-Type
 ```

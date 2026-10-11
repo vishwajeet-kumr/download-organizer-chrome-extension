@@ -121,8 +121,7 @@ const MIME_RULES = [
 
 ### Helper functions
 
-```
-getCategoryFromMime(mimeType)
+```getCategoryFromMime(mimeType)
   - If mimeType is falsy or === 'application/octet-stream' → return null
   - Normalise: mimeType.toLowerCase().split(';')[0].trim()
   - Loop MIME_RULES, return category on first prefix match
@@ -144,8 +143,7 @@ getDatePath()
 
 ### chrome.runtime.onInstalled handler
 
-```
-1. chrome.storage.sync.get(['enabled', 'isPro', 'licenseKey', 'folderMap', 'dateSubfolders', 'apiUrl'])
+```1. chrome.storage.sync.get(['enabled', 'isPro', 'licenseKey', 'folderMap', 'dateSubfolders', 'apiUrl'])
 2. Build updates object with only keys that are undefined (never overwrite existing settings)
 3. Defaults: enabled=true, isPro=false, licenseKey=null, dateSubfolders=false, apiUrl='', folderMap=DEFAULT_FOLDER_MAP
 4. If updates has any keys → chrome.storage.sync.set(updates)
@@ -155,8 +153,7 @@ getDatePath()
 
 ### chrome.alarms.onAlarm handler
 
-```
-1. If alarm.name !== 'revalidate-license' → return
+```1. If alarm.name !== 'revalidate-license' → return
 2. chrome.storage.sync.get(['licenseKey', 'apiUrl'])
 3. If !licenseKey || !apiUrl → return
 4. fetch(apiUrl, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ licenseKey }) })
@@ -167,8 +164,7 @@ getDatePath()
 
 ### chrome.downloads.onDeterminingFilename listener
 
-```
-1. Read from chrome.storage.sync: ['enabled', 'isPro', 'folderMap', 'dateSubfolders']
+```1. Read from chrome.storage.sync: ['enabled', 'isPro', 'folderMap', 'dateSubfolders']
 2. If !enabled → suggest() → return
 3. Merge folderMap with DEFAULT_FOLDER_MAP as fallback
 4. category = getCategoryFromMime(item.mime) ?? getCategoryFromExtension(item.filename)
@@ -261,8 +257,7 @@ const PRO_CATEGORIES = ['audio', 'archives', 'code'];
 
 ### Functions to implement (all fully, no stubs)
 
-```
-showScreen(screenId)
+```showScreen(screenId)
   - Hide all screens (screen-main, screen-stats, screen-license) via hidden attribute
   - Remove hidden from the screen matching screenId
 
@@ -339,8 +334,7 @@ document.getElementById('btn-monthly').addEventListener('click', () => chrome.ta
 
 ## api/validate-license.js
 
-```
-Export default async function handler(req, res)
+```Export default async function handler(req, res)
 
 CORS headers — set on every response before anything else:
   res.setHeader('Access-Control-Allow-Origin', '*')

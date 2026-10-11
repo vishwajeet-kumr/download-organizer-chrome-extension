@@ -21,8 +21,7 @@
 
 Build this exact structure. Every file listed must be created.
 
-```
-download-organizer-pro/
+```download-organizer-pro/
 ├── AGENTS.md                      ← index (already exists)
 ├── manifest.json                  ← MV3 manifest
 ├── background.js                  ← service worker: download interception + re-validation
@@ -88,8 +87,7 @@ When zipping for Chrome Web Store: exclude `api/` and `vercel.json`.
 These live in Vercel dashboard → Project Settings → Environment Variables.
 Never hardcode them. Never commit them.
 
-```
-DODO_API_KEY=               # From Dodo Payments → Developer → API Keys
+```DODO_API_KEY=               # From Dodo Payments → Developer → API Keys
 DODO_WEBHOOK_SECRET=        # From Dodo Payments → Developer → Webhooks
 ```
 

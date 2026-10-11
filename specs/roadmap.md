@@ -70,8 +70,7 @@ Tasks (in order):
 5. Update VALIDATION_API_URL constant in popup.js with live Vercel URL
 6. Test with curl:
 
-   ```
-   curl -X POST https://YOUR_PROJECT.vercel.app/api/validate-license \
+   ```curl -X POST https://YOUR_PROJECT.vercel.app/api/validate-license \
      -H "Content-Type: application/json" \
      -d '{"licenseKey":"invalid-key-test"}'
    ```
@@ -79,8 +78,7 @@ Tasks (in order):
    Expected: `{"valid":false}`
 7. Test OPTIONS preflight (CORS check):
 
-   ```
-   curl -X OPTIONS https://YOUR_PROJECT.vercel.app/api/validate-license \
+   ```curl -X OPTIONS https://YOUR_PROJECT.vercel.app/api/validate-license \
      -H "Origin: chrome-extension://anyid"
    ```
 
