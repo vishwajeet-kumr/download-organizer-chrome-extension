@@ -237,6 +237,9 @@ function handleResetStats() {
 
 document.addEventListener('DOMContentLoaded', loadSettings);
 toggleEl.addEventListener('change', handleToggle);
+dateSubfoldersCheckbox.addEventListener('change', () => {
+  chrome.storage.sync.set({ dateSubfolders: dateSubfoldersCheckbox.checked });
+});
 saveBtn.addEventListener('click', handleSave);
 activateBtn.addEventListener('click', handleActivateLicense);
 resetStatsBtn.addEventListener('click', handleResetStats);
