@@ -27,23 +27,57 @@ export default async function handler(req, res) {
 
   try {
     // 5. Call Dodo Payments API to validate the license/subscription
-    const dodoResponse = await fetch('https://api.dodopayments.com/licenses/validate', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DODO_API_KEY}`,
-      },
-      body: JSON.stringify({ license_key: licenseKey.trim() }),
-    });
+    // Note: Dodo Payments routes live licenses through live.dodopayments.com
+    // and test licenses through test.dodopayments.com. We support both seamlessly.
+    const isTestMode =
+      process.env.DODO_ENV === 'test' ||
+      (typeof process.env.DODO_API_KEY === 'string' && process.env.DODO_API_KEY.startsWith('test_')) ||
+      licenseKey.trim().startsWith('test_');
 
-    // If Dodo Payments returns non-200, key is invalid
-    if (!dodoResponse.ok) {
+    const endpoints = isTestMode
+      ? [
+          'https://test.dodopayments.com/licenses/validate',
+          'https://live.dodopayments.com/licenses/validate',
+          'https://api.dodopayments.com/licenses/validate',
+        ]
+      : [
+          'https://live.dodopayments.com/licenses/validate',
+          'https://test.dodopayments.com/licenses/validate',
+          'https://api.dodopayments.com/licenses/validate',
+        ];
+
+    let data = null;
+
+    for (const endpoint of endpoints) {
+      try {
+        const dodoResponse = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.DODO_API_KEY}`,
+          },
+          body: JSON.stringify({ license_key: licenseKey.trim() }),
+        });
+
+        if (dodoResponse.ok) {
+          const json = await dodoResponse.json();
+          data = json;
+          // If valid response found, stop searching
+          if (json && (json.valid === true || json.status === 'active')) {
+            break;
+          }
+        }
+      } catch (err) {
+        // Fallback to next endpoint in case of DNS or network issue
+      }
+    }
+
+    // If no endpoint could be reached or no response data
+    if (!data) {
       res.status(200).json({ valid: false });
       return;
     }
-
-    const data = await dodoResponse.json();
 
     // Check if the payment/subscription is active and valid
     const isValid = data.valid === true || data.status === 'active';
@@ -52,7 +86,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Check if it belongs to our store using process.env.DODO_WEBHOOK_SECRET for verification
+    // Check if it belongs to our store using process.env.DODO_WEBHOOK_SECRET for verification (if configured)
     if (process.env.DODO_WEBHOOK_SECRET) {
       if (data.store_id && String(data.store_id) !== String(process.env.DODO_WEBHOOK_SECRET)) {
         res.status(200).json({ valid: false });

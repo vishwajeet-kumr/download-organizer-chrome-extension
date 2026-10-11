@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "description": "Automatically sorts every download into the right folder. Images, videos, documents — always in their place.",
   "permissions": ["downloads", "storage", "alarms"],
-  "host_permissions": ["https://api.dodopayments.com/*"],
+  "host_permissions": [
+    "https://api.dodopayments.com/*",
+    "https://*.vercel.app/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
