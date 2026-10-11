@@ -5,8 +5,8 @@
 // --- Constants ---
 
 const DODO_URLS = {
-  oneTime: 'https://checkout.dodopayments.com/buy/pdt_0NpVXGtrkfXP9C5o8S0k9?quantity=1',
-  monthly: 'https://checkout.dodopayments.com/buy/pdt_0NpVYD3jDpndwrA1HULwM?quantity=1',
+  oneTime: 'https://test.checkout.dodopayments.com/buy/pdt_0NpVjeV6YhyOO3XLztFoq?quantity=1',
+  monthly: 'https://test.checkout.dodopayments.com/buy/pdt_0NpVjoHNkR4JDagrJH14a?quantity=1',
 };
 const VALIDATION_API_URL = 'https://download-organizer-chrome-extension-jptfekref.vercel.app/api/validate-license';
 
