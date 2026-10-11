@@ -8,7 +8,7 @@ const DODO_URLS = {
   oneTime: 'REPLACE_WITH_DODO_ONETIME_CHECKOUT_URL',
   monthly: 'REPLACE_WITH_DODO_MONTHLY_CHECKOUT_URL',
 };
-const VALIDATION_API_URL = 'REPLACE_WITH_VERCEL_URL/api/validate-license';
+const VALIDATION_API_URL = 'https://download-organizer-chrome-extension-jptfekref.vercel.app/api/validate-license';
 
 const DEFAULT_FOLDER_MAP = {
   images: 'Images', videos: 'Videos', documents: 'Documents',
