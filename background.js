@@ -51,7 +51,6 @@ const MIME_RULES = [
   { prefix: 'image/',                                         category: 'images'    },
   { prefix: 'video/',                                         category: 'videos'    },
   { prefix: 'audio/',                                         category: 'audio'     },
-  { prefix: 'application/ogg',                                category: 'audio'     },
   { prefix: 'application/pdf',                                category: 'documents' },
   { prefix: 'application/msword',                             category: 'documents' },
   { prefix: 'application/vnd.openxmlformats-officedocument',  category: 'documents' },
@@ -61,16 +60,11 @@ const MIME_RULES = [
   { prefix: 'application/rtf',                                category: 'documents' },
   { prefix: 'application/epub+zip',                           category: 'documents' },
   { prefix: 'application/zip',                                category: 'archives'  },
-  { prefix: 'application/x-zip',                              category: 'archives'  },
-  { prefix: 'application/x-zip-compressed',                   category: 'archives'  },
-  { prefix: 'application/x-gzip',                             category: 'archives'  },
   { prefix: 'application/x-rar-compressed',                   category: 'archives'  },
   { prefix: 'application/x-7z-compressed',                    category: 'archives'  },
   { prefix: 'application/gzip',                               category: 'archives'  },
   { prefix: 'application/x-tar',                              category: 'archives'  },
   { prefix: 'text/javascript',                                 category: 'code'      },
-  { prefix: 'application/javascript',                          category: 'code'      },
-  { prefix: 'application/x-javascript',                        category: 'code'      },
   { prefix: 'text/typescript',                                 category: 'code'      },
   { prefix: 'text/html',                                       category: 'code'      },
   { prefix: 'text/css',                                        category: 'code'      },
@@ -95,8 +89,7 @@ function getCategoryFromMime(mimeType) {
 
 function getCategoryFromExtension(filename) {
   if (!filename) return null;
-  const cleanName = filename.split('?')[0].split('#')[0];
-  const parts = cleanName.split('.');
+  const parts = filename.split('.');
   if (parts.length < 2) return null;
   const ext = parts[parts.length - 1].toLowerCase();
   return EXTENSION_MAP[ext] ?? null;
@@ -186,12 +179,9 @@ chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
   chrome.storage.sync.get(
     ['enabled', 'isPro', 'folderMap', 'dateSubfolders'],
     (result) => {
-      // Compute basename once, used in all suggest() calls including early exits
-      const basename = getBasename(item.filename);
-
       // If extension is disabled, use default location
       if (!result.enabled) {
-        suggest({ filename: basename, conflictAction: 'uniquify' });
+        suggest();
         return;
       }
 
@@ -204,13 +194,13 @@ chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
 
       // Unknown file type — use default location
       if (!category) {
-        suggest({ filename: basename, conflictAction: 'uniquify' });
+        suggest();
         return;
       }
 
       // Pro category on free plan — use default location
       if (PRO_CATEGORIES.includes(category) && !result.isPro) {
-        suggest({ filename: basename, conflictAction: 'uniquify' });
+        suggest();
         return;
       }
 
@@ -222,15 +212,18 @@ chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
         folderName = folderName + '/' + getDatePath();
       }
 
+      const basename = getBasename(item.filename);
       suggest({ filename: folderName + '/' + basename, conflictAction: 'uniquify' });
 
-      // Track stats for all users — display is still Pro-only (gated in popup.js renderProState)
-      chrome.storage.local.get(['stats'], (statsResult) => {
-        const stats = statsResult.stats || { ...DEFAULT_STATS };
-        stats.total = (stats.total || 0) + 1;
-        stats[category] = (stats[category] || 0) + 1;
-        chrome.storage.local.set({ stats });
-      });
+      // Stats tracking (Pro only)
+      if (result.isPro) {
+        chrome.storage.local.get(['stats'], (statsResult) => {
+          const stats = statsResult.stats || { ...DEFAULT_STATS };
+          stats.total = (stats.total || 0) + 1;
+          stats[category] = (stats[category] || 0) + 1;
+          chrome.storage.local.set({ stats });
+        });
+      }
     }
   );
 
